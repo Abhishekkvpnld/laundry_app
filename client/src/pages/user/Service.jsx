@@ -1,20 +1,23 @@
 import Footer from "@/components/user/Footer";
-import { serviceData } from "../../utils/Data"
+import { laundryShopsData, serviceData } from "../../utils/Data"
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/user/Navbar";
 import React, { useState } from "react";
-const laundryShopsData = []
+import LaundryShopCard from "@/components/user/LaundryShopCard";
+import LaundryShopsSection from "@/components/user/LaundryShopsSection";
 
 
 
 const Service = () => {
-    // State for toggling between services and shops
+
+
     const [showServices, setShowServices] = useState(true);
 
-    // Function to handle the toggle action
     const handleToggle = () => {
         setShowServices(!showServices);
     }
+
+
 
     return (
         <>
@@ -49,18 +52,10 @@ const Service = () => {
                                 </CardContent>
                             </Card>
                         ))
-                        : laundryShopsData?.map((shop, index) => (
-                            <Card
-                                key={index}
-                                className="group p-4 transition duration-300 border hover:shadow-xl hover:scale-105"
-                            >
-                                <CardContent className="flex flex-col items-center text-center space-y-4">
-                                    <h4 className="text-lg font-semibold text-gray-700">{shop.name}</h4>
-                                    <p className="text-sm text-gray-500">{shop.address}</p>
-                                    <p className="text-sm text-gray-500">{shop.contact}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
+                        : (
+                            <LaundryShopsSection />
+                        )
+                    }
                 </div>
             </section>
 

@@ -107,3 +107,49 @@ export const pricing = [
         details: "Get your laundry in 24 hours.",
       },
   ];
+
+
+
+  export const laundryShopsData = [
+    {
+      name: "Sparkle Clean Laundry",
+      address: "12 MG Road, Kochi, Kerala",
+      contact: "+91 98765 43210",
+      openingHours: "Mon-Sat: 9AM - 8PM",
+      services: ["Wash & Fold", "Dry Cleaning", "Ironing"],
+      rating: 4.5,
+    },
+    {
+      name: "FreshWave Laundry",
+      address: "21 Beach Road, Calicut, Kerala",
+      contact: "+91 99988 77665",
+      openingHours: "All Days: 8AM - 9PM",
+      services: ["Wash & Fold", "Shoe Cleaning", "Pickup & Delivery"],
+      rating: 4.2,
+    },
+    {
+      name: "Urban Wash Point",
+      address: "5 Market Street, Trivandrum, Kerala",
+      contact: "+91 99887 55443",
+      openingHours: "Mon-Sun: 7AM - 10PM",
+      services: ["Dry Cleaning", "Ironing", "Express Service"],
+      rating: 4.8,
+    },
+    {
+      name: "QuickSpin Laundry",
+      address: "Near Bus Stand, Thrissur, Kerala",
+      contact: "+91 98765 12345",
+      openingHours: "Tue-Sun: 9AM - 7PM",
+      services: ["Wash & Fold", "Pickup & Delivery"],
+      rating: 4.3,
+    },
+    {
+      name: "Neat & Clean Hub",
+      address: "88 Residency Lane, Kannur, Kerala",
+      contact: "+91 91234 56789",
+      openingHours: "Mon-Sat: 10AM - 6PM",
+      services: ["Ironing", "Dry Cleaning"],
+      rating: 4.0,
+    },
+  ];
+  
