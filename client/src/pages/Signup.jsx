@@ -112,10 +112,7 @@ const Signup = () => {
                 <input checked={input.role === "user"} onChange={onChangeValueController} type="radio" name="role" id="r1" value={"user"} className="cursor-pointer" />
                 <Label className={"text-orange-700"} htmlFor="r1">User</Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <input checked={input.role === "admin"} onChange={onChangeValueController} type="radio" name="role" id="r2" value={"admin"} className="cursor-pointer" />
-                <Label className={"text-orange-700"} htmlFor="r2">Admin</Label>
-              </div>
+
               <div className="flex items-center space-x-2">
                 <input checked={input.role === "shop"} onChange={onChangeValueController} type="radio" name="role" id="r2" value={"shop"} className="cursor-pointer" />
                 <Label className={"text-orange-700"} htmlFor="r2">Shop</Label>

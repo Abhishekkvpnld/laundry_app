@@ -6,6 +6,8 @@ import UserHome from "./pages/user/UserHome";
 import Service from "./pages/user/Service";
 import Profile from "./pages/user/Profile";
 import LaundryDetailsPage from "./pages/user/Details";
+import ShopOwnerHome from "./pages/shop/Home";
+import ShopRegister from "./pages/shop/ShopRegister";
 
 
 
@@ -17,6 +19,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/" element={<UserHome/>}/>
+        <Route path="/shop" element={<ShopOwnerHome/>}/>
+        <Route path="/shop/register" element={<ShopRegister/>}/>
         <Route path="/services" element={<Service/>}/>
         <Route path="/profile" element={<Profile/>} />
         <Route path="/details/:id" element={<LaundryDetailsPage/>} />

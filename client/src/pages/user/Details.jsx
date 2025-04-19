@@ -49,7 +49,7 @@ const LaundryDetailsPage = () => {
         address: "",
         pickupDate: "",
         note: "",
-        items: "",
+        items: 0,
     });
 
 
@@ -62,7 +62,7 @@ const LaundryDetailsPage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         alert("Booking Submitted! ✅");
-        setFormData({ name: "", phone: "", service: "", address: "", pickupDate: "" });
+        setFormData({ name: "", phone: "", service: "", address: "", pickupDate: "", note: "", items: 0 });
     };
 
     return (
@@ -78,7 +78,7 @@ const LaundryDetailsPage = () => {
 
                 <div className="flex flex-col md:flex-row gap-10">
                     {/* Shop Details */}
-                    <div className="md:w-1/2 space-y-4">
+                    <div className="md:w-1/2 space-y-4 px-1">
                         <img
                             src={"/shop_img.jpg"}
                             alt={shop?.name}
