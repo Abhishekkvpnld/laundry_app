@@ -6,8 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import {
+    Popover,
+    PopoverTrigger,
+    PopoverContent,
+} from "@/components/ui/popover";
 import Footer from "@/components/user/Footer";
 import Navbar from "@/components/user/Navbar";
+import { CreditCard, Wallet2, ShoppingCart } from "lucide-react";
 import {
     Table,
     TableBody,
@@ -16,9 +22,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
-
-
 
 const laundryShopsData = [
     {
@@ -52,17 +55,24 @@ const LaundryDetailsPage = () => {
         items: 0,
     });
 
-
     const shop = laundryShopsData.find((s) => s.id === id);
     if (!shop)
         return <div className="text-center p-10 text-gray-600">Laundry shop not found.</div>;
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) =>
+        setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert("Booking Submitted! ✅");
-        setFormData({ name: "", phone: "", service: "", address: "", pickupDate: "", note: "", items: 0 });
+    const handleSubmit = (paymentType) => {
+        alert(`Booking Submitted with ${paymentType}! ✅`);
+        setFormData({
+            name: "",
+            phone: "",
+            service: "",
+            address: "",
+            pickupDate: "",
+            note: "",
+            items: 0,
+        });
     };
 
     return (
@@ -86,7 +96,9 @@ const LaundryDetailsPage = () => {
                         />
                         <div className="flex items-center justify-between">
                             <h2 className="text-3xl font-bold text-slate-800">{shop?.name}</h2>
-                            <span className={`text-green-700 font-semibold text-md ${shop?.status == "close" ? "text-red-700 bg-red-50" : "text-green-600 bg-green-50"} shadow px-4 py-0.5 rounded-full`}>{shop?.status == "close" ? "close" : "open"}</span>
+                            <span className={`text-green-700 font-semibold text-md ${shop?.status == "close" ? "text-red-700 bg-red-50" : "text-green-600 bg-green-50"} shadow px-4 py-0.5 rounded-full`}>
+                                {shop?.status == "close" ? "close" : "open"}
+                            </span>
                         </div>
                         <p className="text-sm text-slate-600">{shop?.address}</p>
                         <p className="text-sm text-slate-500">📞 {shop?.contact}</p>
@@ -120,7 +132,7 @@ const LaundryDetailsPage = () => {
                             <CardTitle className="text-xl font-semibold">Book Your Service</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form className="space-y-4">
                                 <Input
                                     name="name"
                                     value={formData.name}
@@ -146,7 +158,9 @@ const LaundryDetailsPage = () => {
                                 <div className="flex gap-4">
                                     <div className="flex-1">
                                         <Select
-                                            onValueChange={(value) => setFormData({ ...formData, service: value })}
+                                            onValueChange={(value) =>
+                                                setFormData({ ...formData, service: value })
+                                            }
                                             required
                                         >
                                             <SelectTrigger>
@@ -174,8 +188,6 @@ const LaundryDetailsPage = () => {
                                     />
                                 </div>
 
-
-                                {/* New Additional Note Field */}
                                 <Textarea
                                     name="note"
                                     value={formData.note || ""}
@@ -190,13 +202,51 @@ const LaundryDetailsPage = () => {
                                     onChange={handleChange}
                                     required
                                 />
-                                <Button type="submit" className="w-full">
-                                    Confirm Booking
-                                </Button>
+
+                                {/* Popover Payment Options */}
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button type="button" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
+                                            Confirm Booking
+                                        </Button>
+                                    </PopoverTrigger>
+
+                                    <PopoverContent className="w-72 p-4 rounded-xl shadow-lg border bg-white">
+                                        <h3 className="text-lg font-semibold text-slate-800 mb-3 text-center">Select Payment Method</h3>
+                                        <div className="flex flex-col gap-3">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => handleSubmit("Cash on Delivery")}
+                                                className="flex items-center justify-start gap-2"
+                                            >
+                                                <Wallet2 className="w-4 h-4" />
+                                                Cash on Delivery
+                                            </Button>
+
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => handleSubmit("Online Payment")}
+                                                className="flex items-center justify-start gap-2"
+                                            >
+                                                <CreditCard className="w-4 h-4" />
+                                                Online Payment
+                                            </Button>
+
+                                            <Button
+                                                variant="ghost"
+                                                className="flex items-center justify-center gap-2 text-blue-600 hover:bg-blue-50 mt-2"
+                                                onClick={() => alert("Redirecting to cart...")}
+                                            >
+                                                <ShoppingCart className="w-4 h-4" />
+                                                View Cart
+                                            </Button>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+
                             </form>
                         </CardContent>
                     </Card>
-
                 </div>
 
                 {/* Pricing Section */}
@@ -219,7 +269,6 @@ const LaundryDetailsPage = () => {
                         </TableBody>
                     </Table>
                 </div>
-
 
                 {/* Google Map */}
                 <div className="mt-12">

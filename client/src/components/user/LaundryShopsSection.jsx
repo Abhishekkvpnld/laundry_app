@@ -30,7 +30,7 @@ const LaundryShopsSection = () => {
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
                 {filteredShops.length > 0 ? (
                     filteredShops.map((shop, index) => (
                         <LaundryShopCard shop={shop} key={index} />
