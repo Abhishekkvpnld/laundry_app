@@ -48,11 +48,10 @@ const LaundryDetailsPage = () => {
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
-        service: "",
         address: "",
         pickupDate: "",
         note: "",
-        items: 0,
+        selectedServices: [{ service: "", quantity: 1 }],
     });
 
     const shop = laundryShopsData.find((s) => s.id === id);
@@ -63,15 +62,19 @@ const LaundryDetailsPage = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const handleSubmit = (paymentType) => {
-        alert(`Booking Submitted with ${paymentType}! ✅`);
+        const details = formData.selectedServices
+            .map((s) => `${s.quantity} x ${s.service}`)
+            .join(", ");
+
+        alert(`Booking Submitted!\nPayment: ${paymentType}\nServices: ${details}`);
+
         setFormData({
             name: "",
             phone: "",
-            service: "",
             address: "",
             pickupDate: "",
             note: "",
-            items: 0,
+            selectedServices: [{ service: "", quantity: 1 }],
         });
     };
 
@@ -155,38 +158,68 @@ const LaundryDetailsPage = () => {
                                     placeholder="Your Address"
                                     required
                                 />
-                                <div className="flex gap-4">
-                                    <div className="flex-1">
-                                        <Select
-                                            onValueChange={(value) =>
-                                                setFormData({ ...formData, service: value })
-                                            }
-                                            required
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a Service" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {shop.services.map((service, i) => (
-                                                    <SelectItem key={i} value={service?.name}>
-                                                        {service?.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
 
-                                    <Input
-                                        name="items"
-                                        type="number"
-                                        min={1}
-                                        value={formData.items || ""}
-                                        onChange={handleChange}
-                                        placeholder="No. of Items"
-                                        className="w-[140px]"
-                                        required
-                                    />
-                                </div>
+                                {formData.selectedServices.map((entry, index) => (
+                                    <div key={index} className="flex gap-4 items-center">
+                                        <div className="flex-1">
+                                            <Select
+                                                value={entry.service}
+                                                onValueChange={(value) => {
+                                                    const updated = [...formData.selectedServices];
+                                                    updated[index].service = value;
+                                                    setFormData({ ...formData, selectedServices: updated });
+                                                }}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a Service" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {shop.services.map((service, i) => (
+                                                        <SelectItem key={i} value={service?.name}>
+                                                            {service?.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <Input
+                                            type="number"
+                                            min={1}
+                                            placeholder="Qty"
+                                            value={entry.quantity}
+                                            onChange={(e) => {
+                                                const updated = [...formData.selectedServices];
+                                                updated[index].quantity = e.target.value;
+                                                setFormData({ ...formData, selectedServices: updated });
+                                            }}
+                                            className="w-[100px]"
+                                        />
+
+                                        <Button
+                                            variant="destructive"
+                                            onClick={() => {
+                                                const updated = formData.selectedServices.filter((_, i) => i !== index);
+                                                setFormData({ ...formData, selectedServices: updated });
+                                            }}
+                                        >
+                                            Remove
+                                        </Button>
+                                    </div>
+                                ))}
+
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() =>
+                                        setFormData({
+                                            ...formData,
+                                            selectedServices: [...formData.selectedServices, { service: "", quantity: 1 }],
+                                        })
+                                    }
+                                >
+                                    + Add Another Service
+                                </Button>
 
                                 <Textarea
                                     name="note"
@@ -203,7 +236,6 @@ const LaundryDetailsPage = () => {
                                     required
                                 />
 
-                                {/* Popover Payment Options */}
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button type="button" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
@@ -249,7 +281,6 @@ const LaundryDetailsPage = () => {
                     </Card>
                 </div>
 
-                {/* Pricing Section */}
                 <div className="mt-12 space-y-4">
                     <h3 className="text-xl font-semibold text-slate-800">Service Pricing</h3>
                     <Table>
@@ -270,7 +301,6 @@ const LaundryDetailsPage = () => {
                     </Table>
                 </div>
 
-                {/* Google Map */}
                 <div className="mt-12">
                     <h3 className="text-xl font-semibold mb-4 text-slate-800">Location on Map</h3>
                     <div className="rounded-lg overflow-hidden border">
