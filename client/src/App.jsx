@@ -9,6 +9,8 @@ import LaundryDetailsPage from "./pages/user/Details";
 import ShopOwnerHome from "./pages/shop/Home";
 import ShopRegister from "./pages/shop/ShopRegister";
 import OrderHistory from "./pages/shop/OrderHistory";
+import AdminHome from "./pages/admin/AdminHome";
+import AdminLayout from "./components/admin/AdminLayout";
 
 
 
@@ -34,6 +36,8 @@ const App = () => {
         <Route path="/shop/orders" element={<OrderHistory />} />
 
         {/* Admin Panel */}
+        <Route path="/admin" element={<AdminLayout><AdminHome /></AdminLayout>} />
+
       </Routes>
       <Toaster />
     </Router>
