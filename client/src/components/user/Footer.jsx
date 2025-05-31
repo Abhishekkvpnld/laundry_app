@@ -6,7 +6,8 @@ import {
 
 const Footer = () => {
     return (
-        <footer className="bg-black border-t py-10">
+        <footer className="bg-gray-100 border-t py-10">
+
             <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10 text-gray-700">
 
                 {/* Brand Section */}
@@ -60,13 +61,13 @@ const Footer = () => {
                 {/* Social & Copyright */}
                 <div className="flex flex-col items-center md:items-end gap-4">
                     <div className="flex space-x-4">
-                        <a href="#" className="hover:text-blue-600 text-white transition">
+                        <a href="#" className="hover:text-blue-600 text-black transition">
                             <Facebook size={20} />
                         </a>
-                        <a href="#" className="hover:text-pink-500 text-white transition">
+                        <a href="#" className="hover:text-pink-500 text-black transition">
                             <Instagram size={20} />
                         </a>
-                        <a href="#" className="hover:text-sky-500 transition text-white">
+                        <a href="#" className="hover:text-sky-500 transition text-black">
                             <Twitter size={20} />
                         </a>
                     </div>
