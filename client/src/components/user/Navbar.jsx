@@ -53,8 +53,17 @@ const Navbar = () => {
                     {
                         user && user.role === "user" && (
                             <>
-                                <Link to={"/admin/companies"}> <li className="hover:underline cursor-pointer">Services</li></Link>
-                                <Link to={"/admin/jobs"}> <li className="hover:underline cursor-pointer">bookings</li></Link>
+                                <Link to={"/services"}> <li className="hover:underline cursor-pointer">Services</li></Link>
+                                <Link to={"/bookings"}> <li className="hover:underline cursor-pointer">Bookings</li></Link>
+                            </>
+                        )
+                    }
+
+                      {
+                        user && user.role === "admin" && (
+                            <>
+                                <Link to={"/manage-laundry"}> <li className="hover:underline cursor-pointer">Manage Laundry</li></Link>
+                                <Link to={"/bookings"}> <li className="hover:underline cursor-pointer">Bookings</li></Link>
                             </>
                         )
                     }
@@ -70,15 +79,15 @@ const Navbar = () => {
                     ) : (
                         <Popover>
                             <PopoverTrigger>
-                                <Avatar className="w-10 h-10 rounded-full">
-                                    <AvatarImage src={user?.profile?.profilePhoto || "/profile.png"} alt="avatar" />
+                                <Avatar className="w-10 h-10 rounded-full border-2 hover:border-blue-300">
+                                    <AvatarImage src={user?.profile?.profilePhoto || "/profile.png"} alt="avatar" className={"cursor-pointer hover:scale-110 transition"} />
                                 </Avatar>
                             </PopoverTrigger>
 
                             <PopoverContent className="w-72">
                                 <div className="flex items-center gap-1">
-                                    <Avatar className="w-5 h-5 rounded-full">
-                                        <AvatarImage src={user?.profile?.profilePhoto} alt="avatar" />
+                                    <Avatar className="w-7 h-7 rounded-full">
+                                        <AvatarImage src={user?.profile?.profilePhoto || "/profile.png"} alt="avatar" />
                                     </Avatar>
                                     <div>
                                         <h1 className="text-sm font-medium">{user?.fullname}</h1>
@@ -88,7 +97,7 @@ const Navbar = () => {
                                 <div className="flex items-center gap-2 justify-between">
 
                                     {
-                                        user && user.role === "student" && (
+                                        user && user.role === "user" && (
                                             <div className="flex items-center gap-1">
                                                 {/* <User2 size={18} className="text-slate-600" /> */}
                                                 <Button className="mt-2" variant="outline"><Link to={"/profile"}>
@@ -101,8 +110,8 @@ const Navbar = () => {
 
                                     <div className="flex items-center gap-2">
                                         {/* <LogOut size={18} className="text-slate-600" /> */}
-                                        <Button onClick={logoutHandler} className="mt-2" variant="destructive">
-                                            <LogOut size={18} className="text-slate-600" /> Logout
+                                        <Button onClick={logoutHandler} className="mt-2 cursor-pointer hover:transition hover:scale-105" variant="destructive">
+                                            <LogOut size={18} className="text-white" /> Logout
                                         </Button>
                                     </div>
                                 </div>

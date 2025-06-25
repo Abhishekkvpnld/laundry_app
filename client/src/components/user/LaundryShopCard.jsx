@@ -36,7 +36,7 @@ const LaundryShopCard = ({ shop }) => {
                     <span className="ml-1 text-slate-400">({shop?.rating})</span>
                 </div>
                 <div className="flex flex-wrap gap-2 pt-2">
-                    {shop.services.map((service, index) => (
+                    {shop?.services.map((service, index) => (
                         <span
                             key={index}
                             className="bg-slate-100 text-slate-700 text-xs px-3 py-1 rounded-full"

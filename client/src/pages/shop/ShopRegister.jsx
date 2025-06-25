@@ -6,7 +6,6 @@ import Footer from "@/components/user/Footer";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-
 const ShopRegister = () => {
   const navigate = useNavigate();
 
@@ -16,6 +15,7 @@ const ShopRegister = () => {
     email: "",
     phone: "",
     address: "",
+    place: "",
     services: [],
   });
 
@@ -135,6 +135,23 @@ const ShopRegister = () => {
               onChange={handleChange}
               placeholder="Enter your shop address"
               required
+              className="w-full h-36"
+
+            />
+          </div>
+
+          <div>
+            <label htmlFor="place" className="block mb-1 font-medium text-slate-700">
+              Place / Area
+            </label>
+            <Input
+              id="place"
+              name="place"
+              type="text"
+              value={formData.place}
+              onChange={handleChange}
+              placeholder="Enter your shop location (e.g: Kannur)"
+              required
               className="w-full"
             />
           </div>
@@ -164,7 +181,6 @@ const ShopRegister = () => {
           >
             Register Your Shop
           </Button>
-
         </form>
       </section>
 

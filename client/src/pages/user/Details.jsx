@@ -84,7 +84,7 @@ const LaundryDetailsPage = () => {
             <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
                 <Button
                     onClick={() => navigate(-1)}
-                    className="flex items-center text-white gap-2 text-sm  hover:text-red-500 hover:bg-white hover:border-2 transition"
+                    className="flex items-center text-white gap-2 text-sm  hover:text-red-500 hover:bg-white hover:border-2 hover:transition-all"
                 >
                     <ArrowLeft size={16} /> Back
                 </Button>
@@ -306,7 +306,7 @@ const LaundryDetailsPage = () => {
                     <div className="rounded-lg overflow-hidden border">
                         <iframe
                             title="Laundry Location"
-                            src={`https://www.google.com/maps?q=${encodeURIComponent("irikkur")}&output=embed`}
+                            src="https://www.google.com/maps?q=11.866736, 75.371641&z=15&output=embed"
                             width="100%"
                             height="400"
                             style={{ border: 0 }}
