@@ -20,7 +20,7 @@ const AdminNav = () => {
     { name: 'Orders', icon: <PackageCheck size={20} />, path: '/admin/orders' },
     { name: 'Customers', icon: <Users size={20} />, path: '/admin/customers' },
     { name: 'Services', icon: <Settings size={20} />, path: '/admin/services' },
-    { name: 'Shop Details', icon: <Store size={20} />, path: '/admin/shop' },
+    { name: 'Shop Details', icon: <Store size={20} />, path: '/admin/shops' },
     { name: 'Reports', icon: <FileBarChart2 size={20} />, path: '/admin/reports' },
     { name: 'Settings', icon: <Settings size={20} />, path: '/admin/settings' },
   ];
@@ -38,17 +38,21 @@ const AdminNav = () => {
         </button>
 
         {/* Navigation Links */}
-        <ul className="space-y-3">
+        <ul className="space-y-3 ">
           {menuItems.map((item) => (
             <li key={item.name}>
               <Link
                 to={item.path}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md hover:bg-blue-100 transition ${
-                  location.pathname === item.path ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
-                }`}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md hover:bg-blue-100 transition ${location.pathname === item.path ? 'bg-blue-100 text-blue-600' : 'text-gray-700'
+                  }`}
               >
                 {item.icon}
-                {showText && <span>{item.name}</span>}
+                <span
+                  className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${showText ? "opacity-100 w-auto" : "opacity-0 w-0"
+                    }`}
+                >
+                  {item.name}
+                </span>
               </Link>
             </li>
           ))}

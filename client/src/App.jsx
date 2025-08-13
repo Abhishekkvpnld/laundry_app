@@ -11,6 +11,11 @@ import ShopRegister from "./pages/shop/ShopRegister";
 import OrderHistory from "./pages/shop/OrderHistory";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminLayout from "./components/admin/AdminLayout";
+import AdminOrder from "./components/admin/AdminOrder";
+import AdminServices from "./components/admin/AdminServices";
+import AdminShop from "./components/admin/AdminShop";
+import AdminSettings from "./components/admin/AdminSettings";
+import AdminReports from "./components/admin/AdminReports";
 
 
 
@@ -37,6 +42,12 @@ const App = () => {
 
         {/* Admin Panel */}
         <Route path="/admin" element={<AdminLayout><AdminHome /></AdminLayout>} />
+        <Route path="/admin/orders" element={<AdminLayout><AdminOrder /></AdminLayout>} />
+        <Route path="/admin/customers" element={<AdminLayout><AdminOrder /></AdminLayout>} />
+        <Route path="/admin/services" element={<AdminLayout><AdminServices /></AdminLayout>} />
+        <Route path="/admin/shops" element={<AdminLayout><AdminShop /></AdminLayout>} />
+        <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
+        <Route path="/admin/reports" element={<AdminLayout><AdminReports /></AdminLayout>} />
 
       </Routes>
       <Toaster />
