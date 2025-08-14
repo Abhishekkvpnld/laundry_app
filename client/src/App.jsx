@@ -16,11 +16,16 @@ import AdminServices from "./components/admin/AdminServices";
 import AdminShop from "./components/admin/AdminShop";
 import AdminSettings from "./components/admin/AdminSettings";
 import AdminReports from "./components/admin/AdminReports";
+import { useFetchUserData } from "./hooks/useFetchUser";
 
 
 
 
 const App = () => {
+
+  //Fetch User Data
+  useFetchUserData();
+
   return (
     <Router>
       <Routes>

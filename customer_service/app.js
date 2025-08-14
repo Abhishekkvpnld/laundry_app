@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import dbConnection from "./utils/dbConnection";
 
 dotenv.config();
 
@@ -17,7 +18,9 @@ app.get("/", (req, res) => {
   res.send("Server running....");
 });
 
-const port = process.env.PORT || 4002;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+const PORT = process.env.PORT || 4002;
+dbConnection().then(() => {
+  app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
+  });
 });

@@ -17,7 +17,9 @@ app.get("/", (req, res) => {
   res.send("Server running....");
 });
 
-const port = process.env.PORT || 4005;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+const PORT = process.env.PORT || 4005;
+dbConnection().then(() => {
+  app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
+  });
 });
