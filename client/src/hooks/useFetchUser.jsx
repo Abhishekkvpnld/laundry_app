@@ -1,34 +1,23 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/authSlice";
 
 const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
-// API call
-const fetchUserData = async () => {
-  const res = await axios.get(`${AUTH_BACKEND_URL}/user`, {
-    withCredentials: true, // send cookie JWT
-  });
-  return res.data;
-};
+export const useFetchUserData = (shouldFetch) => {
+    const dispatch = useDispatch();
 
-export const useFetchUserData = () => {
-  const dispatch = useDispatch();
+    useEffect(() => {
+        if (!shouldFetch) return;
 
-  const { isLoading, isError, error, refetch, data } = useQuery({
-    queryKey: ["user"],
-    queryFn: fetchUserData,
-    retry: false,
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      if (data) {
-        console.log("✅ User data fetched:", data);
-        dispatch(setUser(data));
-      }
-    },
-  });
+        const fetchUser = async () => {
+            try {
+                const res = await axios.get(`${AUTH_BACKEND_URL}/user`, { withCredentials: true });
+                dispatch(setUser(res?.data?.data));
+            } catch (err) {
+                console.error(err);
+            }
+        };
 
-  return { isLoading, isError, error, refetch, data };
+        fetchUser();
+    }, [shouldFetch, dispatch]);
 };
