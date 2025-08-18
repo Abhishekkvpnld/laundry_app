@@ -23,7 +23,7 @@ const Service = () => {
         <>
             <Navbar />
 
-            <section className="max-w-6xl mx-auto px-4 py-10">
+            <section className="max-w-6xl mx-auto px-4 py-10 min-h-[100vh]">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-bold text-gray-800">Our Services</h2>
                     <p className="text-gray-500 mt-2">Clean clothes, happy life!</p>
@@ -46,9 +46,9 @@ const Service = () => {
                                 className="group p-4 transition duration-300 border hover:shadow-xl hover:scale-105"
                             >
                                 <CardContent className="flex flex-col items-center text-center space-y-4">
-                                    {service.icon}
-                                    <h4 className="text-lg font-semibold text-gray-700">{service.title}</h4>
-                                    <p className="text-sm text-gray-500">{service.description}</p>
+                                    {service?.icon}
+                                    <h4 className="text-lg font-semibold text-gray-700">{service?.title}</h4>
+                                    <p className="text-sm text-gray-500">{service?.description}</p>
                                 </CardContent>
                             </Card>
                         ))

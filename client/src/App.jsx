@@ -16,25 +16,25 @@ import AdminServices from "./components/admin/AdminServices";
 import AdminShop from "./components/admin/AdminShop";
 import AdminSettings from "./components/admin/AdminSettings";
 import AdminReports from "./components/admin/AdminReports";
-import { useFetchUserData } from "./hooks/useFetchUser";
-import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { clearUser, setUser } from "./redux/authSlice";
 
+const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
 const App = () => {
 
-  const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
-
+  const dispatch = useDispatch();
   const fetchUser = async () => {
     try {
       const res = await axios.get(`${AUTH_BACKEND_URL}/user`, { withCredentials: true });
-      console.log(res.data)
       dispatch(setUser(res?.data?.data));
-      
+
     } catch (err) {
+      dispatch(clearUser());
       console.error(err);
-    } 
+    }
   };
 
 

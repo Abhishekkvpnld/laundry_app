@@ -31,7 +31,7 @@ const LaundryShopsSection = () => {
 
             {/* Cards */}
             <div className="grid md:grid-cols-2 gap-6">
-                {filteredShops.length > 0 ? (
+                {filteredShops?.length > 0 ? (
                     filteredShops.map((shop, index) => (
                         <LaundryShopCard shop={shop} key={index} />
                     ))

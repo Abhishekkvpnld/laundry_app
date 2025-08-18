@@ -1,9 +1,9 @@
-// src/hooks/useLogout.js
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../redux/authSlice"; 
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
@@ -18,7 +18,7 @@ export const useLogout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { mutate, isPending: isLoading, isError, error, data } = useMutation({
+  const mutation = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
       dispatch(clearUser());
@@ -28,9 +28,9 @@ export const useLogout = () => {
     onError: (err) => {
       console.error("Logout error:", err);
       dispatch(clearUser());
-      toast.error("Logout failed");
+      toast.error(err.response?.data?.message || "Logout failed");
     },
   });
 
-  return { logout: mutate, isLoading, isError, error, data };
+  return mutation; 
 };

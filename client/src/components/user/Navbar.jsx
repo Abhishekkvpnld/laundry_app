@@ -2,29 +2,17 @@ import { LogOut } from "lucide-react";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { Link} from "react-router-dom";
 import { useLogout } from "@/hooks/useLogout";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth); // access user from redux
-  const navigate = useNavigate();
-  const { logout, isLoading } = useLogout();
+  const { mutate: logout, isPending: isLoading } = useLogout();
 
   const logoutHandler = () => {
     if (!user) return;
-
-    logout(undefined, {
-      onSuccess: () => {
-        toast.success("Logged out successfully");
-        navigate("/login");
-      },
-      onError: (error) => {
-        console.error(error);
-        toast.error(error.response?.data?.message || "Logout failed");
-      },
-    });
+    logout();
   };
 
   return (

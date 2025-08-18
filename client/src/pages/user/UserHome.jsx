@@ -29,7 +29,7 @@ const UserHome = () => {
                 <section>
                     <h2 className="text-2xl font-semibold mb-4">Our Services</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {services.map((service, index) => {
+                        {services?.map((service, index) => {
                             const Icon = service.icon;
                             return (
                                 <motion.div
@@ -40,10 +40,10 @@ const UserHome = () => {
                                     <Card className="shadow-md cursor-pointer hover:shadow-xl">
                                         <CardHeader className="flex flex-col items-center">
                                             <Icon className="w-10 h-10 text-blue-500 mb-2" />
-                                            <CardTitle>{service.title}</CardTitle>
+                                            <CardTitle>{service?.title}</CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="text-sm text-gray-700 text-center">{service.desc}</p>
+                                            <p className="text-sm text-gray-700 text-center">{service?.desc}</p>
                                         </CardContent>
                                     </Card>
                                 </motion.div>
