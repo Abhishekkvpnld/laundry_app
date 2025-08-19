@@ -45,10 +45,10 @@ const Navbar = () => {
 
           {user?._id && user?.role === "shop" && (
             <>
-              <Link to={"/manage-laundry"}>
+              <Link to={"/shop/register"}>
                 <li className="hover:underline cursor-pointer">Manage Laundry</li>
               </Link>
-              <Link to={"/bookings"}>
+              <Link to={"/shop/orders"}>
                 <li className="hover:underline cursor-pointer">Bookings</li>
               </Link>
             </>
@@ -105,7 +105,7 @@ const Navbar = () => {
               <div className="flex items-center gap-2 justify-between mt-3">
                 {user?.role === "user" && (
                   <Button className="text-sm" variant="outline">
-                    <Link to={"/"}>View Profile</Link>
+                    <Link to={"/profile"}>View Profile</Link>
                   </Button>
                 )}
 

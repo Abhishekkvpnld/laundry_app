@@ -30,7 +30,13 @@ const Login = () => {
     mutate(input, {
       onSuccess: (res) => {
         toast.success("Login successful");
-        navigate("/");
+
+        if (res?.user?.role === "user") {
+          navigate("/");
+        } else {
+          navigate("/shop")
+        }
+
       },
       onError: (err) => {
         toast.error(err?.response?.data?.message || "Login failed");
@@ -63,7 +69,7 @@ const Login = () => {
           <div className="my-2">
             <Label>Password</Label>
             <Input
-              value={input.password}
+              value={input?.password}
               onChange={onChangeValueController}
               name="password"
               type="password"

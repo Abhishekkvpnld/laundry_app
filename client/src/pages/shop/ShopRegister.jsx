@@ -5,6 +5,8 @@ import Navbar from "@/components/user/Navbar";
 import Footer from "@/components/user/Footer";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const ShopRegister = () => {
   const navigate = useNavigate();
@@ -16,7 +18,8 @@ const ShopRegister = () => {
     phone: "",
     address: "",
     place: "",
-    services: [],
+    services: [], // [{ name: "Dry Cleaning", cost: "100" }]
+    location: { lat: null, lng: null },
   });
 
   const servicesOptions = [
@@ -27,25 +30,65 @@ const ShopRegister = () => {
     "Stain Removal",
   ];
 
+  // handle normal text inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // toggle service checkbox
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
+    setFormData((prev) => {
+      if (checked) {
+        return {
+          ...prev,
+          services: [...prev.services, { name: value, cost: "" }],
+        };
+      } else {
+        return {
+          ...prev,
+          services: prev.services.filter((s) => s.name !== value),
+        };
+      }
+    });
+  };
+
+  // handle cost input change
+  const handleServiceCostChange = (serviceName, cost) => {
     setFormData((prev) => ({
       ...prev,
-      services: checked
-        ? [...prev.services, value]
-        : prev.services.filter((service) => service !== value),
+      services: prev.services?.map((s) =>
+        s.name === serviceName ? { ...s, cost } : s
+      ),
     }));
+  };
+
+  // fetch shop location
+  const handleLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setFormData((prev) => ({
+            ...prev,
+            location: { lat: latitude, lng: longitude },
+          }));
+        },
+        (err) => {
+          console.error(err);
+          toast.error("Unable to fetch location. Please allow location access.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    alert("Shop Registered Successfully!");
+    toast.success("Shop Registered Successfully!");
     navigate("/shop/dashboard");
   };
 
@@ -53,15 +96,24 @@ const ShopRegister = () => {
     <>
       <Navbar />
 
-      <section className="max-w-3xl mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-center text-slate-800 mb-10">
-          Register Your Laundry Shop
-        </h2>
+      <section className="bg-gradient-to-b from-blue-50 via-white to-gray-50 py-12 px-4">
+        <div className="max-w-3xl mx-auto text-center mb-10">
+          <h2 className="text-4xl font-bold text-slate-800">
+            Register Your Laundry Shop
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Fill in the details below to list your shop and start receiving orders.
+          </p>
+        </div>
 
-        <form
+        <motion.form
           onSubmit={handleSubmit}
-          className="bg-white p-8 shadow-xl rounded-xl space-y-6"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white p-8 shadow-xl rounded-2xl space-y-6 max-w-3xl mx-auto border border-gray-100 hover:shadow-2xl transition"
         >
+          {/* Shop Name */}
           <div>
             <label htmlFor="shopName" className="block mb-1 font-medium text-slate-700">
               Shop Name
@@ -77,6 +129,7 @@ const ShopRegister = () => {
             />
           </div>
 
+          {/* Owner Name */}
           <div>
             <label htmlFor="ownerName" className="block mb-1 font-medium text-slate-700">
               Owner Name
@@ -92,6 +145,7 @@ const ShopRegister = () => {
             />
           </div>
 
+          {/* Email */}
           <div>
             <label htmlFor="email" className="block mb-1 font-medium text-slate-700">
               Email Address
@@ -108,6 +162,7 @@ const ShopRegister = () => {
             />
           </div>
 
+          {/* Phone */}
           <div>
             <label htmlFor="phone" className="block mb-1 font-medium text-slate-700">
               Phone Number
@@ -124,6 +179,7 @@ const ShopRegister = () => {
             />
           </div>
 
+          {/* Address */}
           <div>
             <label htmlFor="address" className="block mb-1 font-medium text-slate-700">
               Shop Address
@@ -135,11 +191,11 @@ const ShopRegister = () => {
               onChange={handleChange}
               placeholder="Enter your shop address"
               required
-              className="w-full h-36"
-
+              className="w-full h-32"
             />
           </div>
 
+          {/* Place */}
           <div>
             <label htmlFor="place" className="block mb-1 font-medium text-slate-700">
               Place / Area
@@ -156,33 +212,106 @@ const ShopRegister = () => {
             />
           </div>
 
+          {/* Location */}
           <div>
             <label className="block mb-2 font-medium text-slate-700">
-              Services Offered
+              Shop Location
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              {servicesOptions.map((service) => (
-                <label key={service} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    value={service}
-                    checked={formData.services.includes(service)}
-                    onChange={handleCheckboxChange}
-                  />
-                  {service}
-                </label>
-              ))}
+            <Button
+              type="button"
+              onClick={handleLocation}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Add Location
+            </Button>
+            {formData.location.lat && formData.location.lng && (
+              <p className="text-sm text-gray-600 mt-2">
+                📍 Location: {formData.location.lat.toFixed(4)},{" "}
+                {formData.location.lng.toFixed(4)}
+              </p>
+            )}
+            <p className="text-xs text-red-500 mt-1">
+              ⚠️ Only add location in your shop place
+            </p>
+          </div>
+
+          {/* Services */}
+          <div>
+            <label className="block mb-2 font-medium text-slate-700">
+              Services Offered (with Cost)
+            </label>
+            <div className="space-y-3">
+              {servicesOptions?.map((service) => {
+                const selectedService = formData?.services?.find(
+                  (s) => s.name === service
+                );
+                return (
+                  <div
+                    key={service}
+                    className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border hover:bg-blue-50 transition"
+                  >
+                    <label className="flex items-center gap-2 cursor-pointer flex-1">
+                      <input
+                        type="checkbox"
+                        value={service}
+                        checked={!!selectedService}
+                        onChange={handleCheckboxChange}
+                        className="accent-indigo-600"
+                      />
+                      <span className="text-slate-700">{service}</span>
+                    </label>
+
+                    {/* Cost input if service selected */}
+                    {selectedService && (
+                      <Input
+                        type="number"
+                        min="0"
+                        value={selectedService.cost}
+                        onChange={(e) =>
+                          handleServiceCostChange(service, e.target.value)
+                        }
+                        placeholder="Enter cost (₹)"
+                        className="w-40"
+                        required
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-full hover:bg-indigo-700 transition duration-300"
-          >
-            Register Your Shop
-          </Button>
-        </form>
+          {/* Submit */}
+          <motion.div whileTap={{ scale: 0.97 }}>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-full font-semibold hover:opacity-90 transition"
+            >
+              Register Your Shop
+            </Button>
+          </motion.div>
+        </motion.form>
       </section>
+
+      {
+        formData?.location?.lat && (
+          <div className="mt-12">
+            <h3 className="text-xl font-semibold mb-4 text-slate-800">Location on Map</h3>
+            <div className="rounded-lg overflow-hidden border">
+              <iframe
+                title="Laundry Location"
+                src={`https://www.google.com/maps?q=${formData?.location?.lat},${formData?.location?.lng}&z=15&output=embed`}
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+              />
+            </div>
+          </div>
+        )
+      }
+
 
       <Footer />
     </>
