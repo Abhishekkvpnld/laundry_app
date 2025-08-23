@@ -111,75 +111,121 @@ const ShopRegister = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white p-8 shadow-xl rounded-2xl space-y-6 max-w-3xl mx-auto border border-gray-100 hover:shadow-2xl transition"
+          className="bg-white p-8 shadow-xl rounded-2xl space-y-6 max-w-5xl mx-auto border border-gray-100 hover:shadow-2xl transition"
         >
-          {/* Shop Name */}
-          <div>
-            <label htmlFor="shopName" className="block mb-1 font-medium text-slate-700">
-              Shop Name
-            </label>
-            <Input
-              id="shopName"
-              name="shopName"
-              value={formData.shopName}
-              onChange={handleChange}
-              placeholder="Enter your shop name"
-              required
-              className="w-full"
-            />
+          {/* 🔹 Use Grid for larger screens */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            {/* Shop Name */}
+            <div>
+              <label htmlFor="shopName" className="block mb-1 font-medium text-slate-700">
+                Shop Name
+              </label>
+              <Input
+                id="shopName"
+                name="shopName"
+                value={formData.shopName}
+                onChange={handleChange}
+                placeholder="Enter your shop name"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Owner Name */}
+            <div>
+              <label htmlFor="ownerName" className="block mb-1 font-medium text-slate-700">
+                Owner Name
+              </label>
+              <Input
+                id="ownerName"
+                name="ownerName"
+                value={formData.ownerName}
+                onChange={handleChange}
+                placeholder="Enter your name"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block mb-1 font-medium text-slate-700">
+                Email Address
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label htmlFor="phone" className="block mb-1 font-medium text-slate-700">
+                Phone Number
+              </label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Enter your phone number"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Place */}
+            <div>
+              <label htmlFor="place" className="block mb-1 font-medium text-slate-700">
+                Place / Area
+              </label>
+              <Input
+                id="place"
+                name="place"
+                type="text"
+                value={formData.place}
+                onChange={handleChange}
+                placeholder="Enter your shop location (e.g: Kannur)"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Location Button */}
+            <div>
+              <label className="block mb-2 font-medium text-slate-700">
+                Shop Location
+              </label>
+              <Button
+                type="button"
+                onClick={handleLocation}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Add Location
+              </Button>
+
+              <p className="text-xs text-gray-500 mt-1">
+                ⚠️ Only add location when you are at your laundry shop.
+              </p>
+
+              {formData?.location.lat && formData?.location.lng && (
+                <p className="text-sm text-gray-600 mt-2">
+                  📍 {formData.location.lat.toFixed(4)}, {formData.location.lng.toFixed(4)}
+                </p>
+              )}
+            </div>
+
           </div>
 
-          {/* Owner Name */}
-          <div>
-            <label htmlFor="ownerName" className="block mb-1 font-medium text-slate-700">
-              Owner Name
-            </label>
-            <Input
-              id="ownerName"
-              name="ownerName"
-              value={formData.ownerName}
-              onChange={handleChange}
-              placeholder="Enter your name"
-              required
-              className="w-full"
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block mb-1 font-medium text-slate-700">
-              Email Address
-            </label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
-              className="w-full"
-            />
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label htmlFor="phone" className="block mb-1 font-medium text-slate-700">
-              Phone Number
-            </label>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter your phone number"
-              required
-              className="w-full"
-            />
-          </div>
-
-          {/* Address */}
+          {/* Full width fields (Address & Services) */}
           <div>
             <label htmlFor="address" className="block mb-1 font-medium text-slate-700">
               Shop Address
@@ -195,83 +241,41 @@ const ShopRegister = () => {
             />
           </div>
 
-          {/* Place */}
           <div>
-            <label htmlFor="place" className="block mb-1 font-medium text-slate-700">
-              Place / Area
+            <label className="block mb-3 text-lg font-semibold text-gray-800">
+              Services Offered <span className="text-gray-500 text-sm">(with cost)</span>
             </label>
-            <Input
-              id="place"
-              name="place"
-              type="text"
-              value={formData.place}
-              onChange={handleChange}
-              placeholder="Enter your shop location (e.g: Kannur)"
-              required
-              className="w-full"
-            />
-          </div>
 
-          {/* Location */}
-          <div>
-            <label className="block mb-2 font-medium text-slate-700">
-              Shop Location
-            </label>
-            <Button
-              type="button"
-              onClick={handleLocation}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Add Location
-            </Button>
-            {formData.location.lat && formData.location.lng && (
-              <p className="text-sm text-gray-600 mt-2">
-                📍 Location: {formData.location.lat.toFixed(4)},{" "}
-                {formData.location.lng.toFixed(4)}
-              </p>
-            )}
-            <p className="text-xs text-red-500 mt-1">
-              ⚠️ Only add location in your shop place
-            </p>
-          </div>
-
-          {/* Services */}
-          <div>
-            <label className="block mb-2 font-medium text-slate-700">
-              Services Offered (with Cost)
-            </label>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {servicesOptions?.map((service) => {
-                const selectedService = formData?.services?.find(
-                  (s) => s.name === service
-                );
+                const selectedService = formData?.services?.find((s) => s?.name === service);
+
                 return (
                   <div
                     key={service}
-                    className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 rounded-lg border hover:bg-blue-50 transition"
+                    className="flex items-center justify-between p-4 rounded-2xl border bg-white shadow-sm hover:shadow-md transition"
                   >
-                    <label className="flex items-center gap-2 cursor-pointer flex-1">
+                    {/* Checkbox + Label */}
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         value={service}
                         checked={!!selectedService}
                         onChange={handleCheckboxChange}
-                        className="accent-indigo-600"
+                        className="h-5 w-5 accent-indigo-600"
                       />
-                      <span className="text-slate-700">{service}</span>
+                      <span className="text-gray-700 font-medium">{service}</span>
                     </label>
 
-                    {/* Cost input if service selected */}
+                    {/* Cost Input (if selected) */}
                     {selectedService && (
-                      <Input
+                      <input
                         type="number"
                         min="0"
                         value={selectedService.cost}
-                        onChange={(e) =>
-                          handleServiceCostChange(service, e.target.value)
-                        }
-                        placeholder="Enter cost (₹)"
-                        className="w-40"
+                        onChange={(e) => handleServiceCostChange(service, e.target.value)}
+                        placeholder="₹ Cost"
+                        className="w-28 px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                         required
                       />
                     )}
@@ -280,6 +284,7 @@ const ShopRegister = () => {
               })}
             </div>
           </div>
+
 
           {/* Submit */}
           <motion.div whileTap={{ scale: 0.97 }}>
@@ -291,6 +296,7 @@ const ShopRegister = () => {
             </Button>
           </motion.div>
         </motion.form>
+
       </section>
 
       {
