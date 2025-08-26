@@ -32,6 +32,7 @@ import { useDispatch } from "react-redux";
 import { clearUser, setUser } from "./redux/authSlice";
 import ProtectedRoute from "@/helper/ProtectedRoute";
 import NotFound from "./helper/NotFound";
+import ShopOwnerProfile from "./pages/shop/ShopOwnerProfile";
 
 // 🌍 Backend URL
 const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
@@ -79,6 +80,7 @@ const App = () => {
         <Route path="/shop" element={<ProtectedRoute><ShopOwnerHome /></ProtectedRoute>} />
         <Route path="/shop/register" element={<ProtectedRoute><ShopRegister /></ProtectedRoute>} />
         <Route path="/shop/orders" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+        <Route path="/shop/profile" element={<ProtectedRoute><ShopOwnerProfile /></ProtectedRoute>} />
 
         {/* Admin Panel */}
         <Route path="/admin" element={<ProtectedRoute><AdminLayout><AdminHome /></AdminLayout></ProtectedRoute>} />
