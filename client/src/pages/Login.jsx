@@ -15,8 +15,8 @@ const Login = () => {
 
 
   const [input, setInput] = useState({
-    email: "user@gmail.com",
-    password: "user@123",
+    email: "shop@gmail.com",
+    password: "Shop@123",
     role: "",
   });
 

@@ -4,11 +4,12 @@ export const jwtAuth = (req, res, next) => {
   try {
     // Retrieve token from cookies
     const token = req.cookies?.token || req.headers?.cookie;
+
     if (!token) {
       return res.status(401).json({
         success: false,
         error: true,
-        message: "User not authenticated...🔐",
+        message: "User not authenticated...🔐", 
       });
     }
 
@@ -23,7 +24,7 @@ export const jwtAuth = (req, res, next) => {
       }
 
       // Attach userId to the request object
-      req.id = decoded.userId;
+      req.id = decoded.id;
       next();
     });
   } catch (error) {

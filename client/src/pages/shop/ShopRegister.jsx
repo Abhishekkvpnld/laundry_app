@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import axios from "axios";
+import { SHOP_API_END_POINT } from "@/utils/constants";
 
 const ShopRegister = () => {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ const ShopRegister = () => {
       } else {
         return {
           ...prev,
-          services: prev.services.filter((s) => s.name !== value),
+          services: prev?.services?.filter((s) => s.name !== value),
         };
       }
     });
@@ -85,12 +87,30 @@ const ShopRegister = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    toast.success("Shop Registered Successfully!");
-    navigate("/shop/dashboard");
+    try {
+      const res = await axios.post(
+        `${SHOP_API_END_POINT}/register`,
+        formData,
+        { withCredentials: true }
+      );
+
+      if (res?.data?.success) {
+        toast.success("Laundry Registered Successfully!");
+        navigate("/shop");
+      }
+    } catch (error) {
+      console.error("Error in shop register:", error);
+
+      // Handle backend error message safely
+      const errMsg =
+        error?.response?.data?.message || "Something went wrong. Please try again.";
+
+      toast.error(errMsg);
+    }
   };
+
 
   return (
     <>
@@ -207,7 +227,7 @@ const ShopRegister = () => {
               <Button
                 type="button"
                 onClick={handleLocation}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 Add Location
               </Button>
@@ -275,7 +295,7 @@ const ShopRegister = () => {
                         value={selectedService.cost}
                         onChange={(e) => handleServiceCostChange(service, e.target.value)}
                         placeholder="₹ Cost"
-                        className="w-28 px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-28 px-3 cursor-pointer py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                         required
                       />
                     )}
@@ -290,7 +310,7 @@ const ShopRegister = () => {
           <motion.div whileTap={{ scale: 0.97 }}>
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-full font-semibold hover:opacity-90 transition"
+              className="w-full bg-gradient-to-r cursor-pointer from-indigo-600 to-violet-600 text-white py-3 rounded-full font-semibold hover:opacity-90 transition"
             >
               Register Your Shop
             </Button>
