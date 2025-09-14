@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/user/Navbar";
@@ -9,9 +9,21 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import axios from "axios";
 import { SHOP_API_END_POINT } from "@/utils/constants";
+import { useFetchShopData } from "@/hooks/useFetchShopData"; // Custom hook to fetch shop data
+import Loading from "@/helper/Loading";
+
+const servicesOptions = [
+  "Dry Cleaning",
+  "Ironing",
+  "Laundry Wash",
+  "Pickup & Delivery",
+  "Stain Removal",
+];
 
 const ShopRegister = () => {
   const navigate = useNavigate();
+  const { data, isLoading } = useFetchShopData();
+  const shopData = data?.data;
 
   const [formData, setFormData] = useState({
     shopName: "",
@@ -24,21 +36,33 @@ const ShopRegister = () => {
     location: { lat: null, lng: null },
   });
 
-  const servicesOptions = [
-    "Dry Cleaning",
-    "Ironing",
-    "Laundry Wash",
-    "Pickup & Delivery",
-    "Stain Removal",
-  ];
+  const isUpdateMode = !!shopData;
 
-  // handle normal text inputs
+
+  //Fetching shop data
+  useEffect(() => {
+    if (shopData) {
+      const { shopName, ownerName, email, phone, address, place, services, location } = shopData;
+
+      setFormData({
+        shopName,
+        ownerName,
+        email,
+        phone,
+        address,
+        place,
+        services: services || [],
+        location: location || { lat: null, lng: null },
+      });
+    }
+  }, [shopData]);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // toggle service checkbox
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => {
@@ -50,23 +74,21 @@ const ShopRegister = () => {
       } else {
         return {
           ...prev,
-          services: prev?.services?.filter((s) => s.name !== value),
+          services: prev.services.filter((s) => s.name !== value),
         };
       }
     });
   };
 
-  // handle cost input change
   const handleServiceCostChange = (serviceName, cost) => {
     setFormData((prev) => ({
       ...prev,
-      services: prev.services?.map((s) =>
+      services: prev.services.map((s) =>
         s.name === serviceName ? { ...s, cost } : s
       ),
     }));
   };
 
-  // fetch shop location
   const handleLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -89,28 +111,46 @@ const ShopRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await axios.post(
-        `${SHOP_API_END_POINT}/register`,
-        formData,
-        { withCredentials: true }
-      );
+      const endpoint = isUpdateMode
+        ? `${SHOP_API_END_POINT}/update`
+        : `${SHOP_API_END_POINT}/register`;
+
+      let res;
+      if (isUpdateMode) {
+        res = await axios.put(endpoint, formData, {
+          withCredentials: true,
+        });
+      } else {
+        res = await axios.post(endpoint, formData, {
+          withCredentials: true,
+        });
+      }
 
       if (res?.data?.success) {
-        toast.success("Laundry Registered Successfully!");
+        toast.success(
+          isUpdateMode
+            ? "Shop details updated successfully!"
+            : "Laundry registered successfully!"
+        );
         navigate("/shop");
       }
     } catch (error) {
-      console.error("Error in shop register:", error);
+      console.error("Error in shop register/update:", error);
 
-      // Handle backend error message safely
       const errMsg =
-        error?.response?.data?.message || "Something went wrong. Please try again.";
+        error?.response?.data?.message ||
+        "Something went wrong. Please try again.";
 
       toast.error(errMsg);
     }
   };
 
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -119,10 +159,12 @@ const ShopRegister = () => {
       <section className="bg-gradient-to-b from-blue-50 via-white to-gray-50 py-12 px-4">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-4xl font-bold text-slate-800">
-            Register Your Laundry Shop
+            {isUpdateMode ? "Update Your Laundry Shop" : "Register Your Laundry Shop"}
           </h2>
           <p className="text-gray-600 mt-2">
-            Fill in the details below to list your shop and start receiving orders.
+            {isUpdateMode
+              ? "Update your shop details to manage orders."
+              : "Fill in the details below to list your shop and start receiving orders."}
           </p>
         </div>
 
@@ -312,32 +354,30 @@ const ShopRegister = () => {
               type="submit"
               className="w-full bg-gradient-to-r cursor-pointer from-indigo-600 to-violet-600 text-white py-3 rounded-full font-semibold hover:opacity-90 transition"
             >
-              Register Your Shop
+              {isUpdateMode ? "Update Shop" : "Register Your Shop"}
             </Button>
           </motion.div>
         </motion.form>
-
       </section>
 
-      {
-        formData?.location?.lat && (
-          <div className="mt-12">
-            <h3 className="text-xl font-semibold mb-4 text-slate-800">Location on Map</h3>
-            <div className="rounded-lg overflow-hidden border">
-              <iframe
-                title="Laundry Location"
-                src={`https://www.google.com/maps?q=${formData?.location?.lat},${formData?.location?.lng}&z=15&output=embed`}
-                width="100%"
-                height="400"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-              />
-            </div>
+      {formData?.location?.lat && (
+        <div className="mt-12">
+          <h3 className="text-xl font-semibold mb-4 text-slate-800">
+            Location on Map
+          </h3>
+          <div className="rounded-lg overflow-hidden border">
+            <iframe
+              title="Laundry Location"
+              src={`https://www.google.com/maps?q=${formData?.location?.lat},${formData?.location?.lng}&z=15&output=embed`}
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+            />
           </div>
-        )
-      }
-
+        </div>
+      )}
 
       <Footer />
     </>

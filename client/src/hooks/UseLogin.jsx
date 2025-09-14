@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/authSlice"; // adjust path
+import { setUser } from "../redux/authSlice";
 
 const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
 
@@ -9,9 +9,9 @@ export const loginUser = async ({ email, password, role }) => {
   const res = await axios.post(
     `${AUTH_BACKEND_URL}/login`,
     { email, password, role },
-    { withCredentials: true } // so JWT cookie is stored
+    { withCredentials: true } //JWT cookie is stored
   );
-  return res.data; // should contain user info
+  return res.data; 
 };
 
 export const useLogin = () => {

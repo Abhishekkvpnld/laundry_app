@@ -91,7 +91,7 @@ const Signup = () => {
           <div className="my-2">
             <Label className="my-1">Email</Label>
             <Input
-              value={input.email}
+              value={input?.email}
               onChange={onChangeValueController}
               name="email"
               type="email"
@@ -103,7 +103,7 @@ const Signup = () => {
           <div className="my-2">
             <Label className="my-1">Phone Number</Label>
             <Input
-              value={input.phone}
+              value={input?.phone}
               onChange={onChangeValueController}
               name="phone"
               type="number"
@@ -115,7 +115,7 @@ const Signup = () => {
           <div className="my-2">
             <Label className="my-2">Password</Label>
             <Input
-              value={input.password}
+              value={input?.password}
               onChange={onChangeValueController}
               name="password"
               type="password"
@@ -127,7 +127,7 @@ const Signup = () => {
           <div className="my-2">
             <Label className="my-2">Confirm Password</Label>
             <Input
-              value={input.confirmPassword}
+              value={input?.confirmPassword}
               onChange={onChangeValueController}
               name="confirmPassword"
               type="password"
@@ -141,7 +141,7 @@ const Signup = () => {
               {["user", "shop"].map((role) => (
                 <div key={role} className="flex items-center space-x-2">
                   <input
-                    checked={input.role === role}
+                    checked={input?.role === role}
                     onChange={onChangeValueController}
                     type="radio"
                     name="role"
@@ -151,7 +151,7 @@ const Signup = () => {
                     required
                   />
                   <Label className="text-orange-700" htmlFor={role}>
-                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                    {role?.charAt(0)?.toUpperCase() + role.slice(1)}
                   </Label>
                 </div>
               ))}
