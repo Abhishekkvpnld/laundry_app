@@ -3,7 +3,7 @@ import { Shirt, Truck, Sparkles, Waves } from "lucide-react";
 const CustomServiceFilter = ({ serviceFilter, setServiceFilter }) => {
   return (
     <div className="relative w-full md:w-[220px]">
-     <select
+      <select
         value={serviceFilter}
         onChange={(e) => setServiceFilter(e.target.value)}
         className="w-full appearance-none px-4 py-2 pr-10 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition bg-white text-gray-700"

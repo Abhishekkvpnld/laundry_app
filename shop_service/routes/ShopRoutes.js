@@ -3,11 +3,14 @@ import { jwtAuth } from "../middlewares/auth.js";
 import { shopRegister } from "../controllers/shopRegister.js";
 import { updateShop } from "../controllers/updateShop.js";
 import { fetchShopData } from "../controllers/shopData.js";
+import { allShops } from "../controllers/allShops.js";
 
 const router = express.Router();
 
-router.post("/register", jwtAuth, shopRegister);
 router.get("/get-shop",jwtAuth,fetchShopData);
-router.put("/update",jwtAuth,updateShop)
+router.get("/all-shops",jwtAuth,allShops)
+
+router.put("/update",jwtAuth,updateShop);
+router.post("/register", jwtAuth, shopRegister);
 
 export default router;
