@@ -34,15 +34,27 @@ const ShopRegister = () => {
     place: "",
     services: [], // [{ name: "Dry Cleaning", cost: "100" }]
     location: { lat: null, lng: null },
+    openingTime: "",
+    closingTime: "",
   });
 
   const isUpdateMode = !!shopData;
 
-
-  //Fetching shop data
+  // Prefill form data when updating
   useEffect(() => {
     if (shopData) {
-      const { shopName, ownerName, email, phone, address, place, services, location } = shopData;
+      const {
+        shopName,
+        ownerName,
+        email,
+        phone,
+        address,
+        place,
+        services,
+        location,
+        openingTime,
+        closingTime,
+      } = shopData;
 
       setFormData({
         shopName,
@@ -53,10 +65,11 @@ const ShopRegister = () => {
         place,
         services: services || [],
         location: location || { lat: null, lng: null },
+        openingTime: openingTime || "",
+        closingTime: closingTime || "",
       });
     }
   }, [shopData]);
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -147,7 +160,6 @@ const ShopRegister = () => {
     }
   };
 
-
   if (isLoading) {
     return <Loading />;
   }
@@ -159,7 +171,9 @@ const ShopRegister = () => {
       <section className="bg-gradient-to-b from-blue-50 via-white to-gray-50 py-12 px-4">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-4xl font-bold text-slate-800">
-            {isUpdateMode ? "Update Your Laundry Shop" : "Register Your Laundry Shop"}
+            {isUpdateMode
+              ? "Update Your Laundry Shop"
+              : "Register Your Laundry Shop"}
           </h2>
           <p className="text-gray-600 mt-2">
             {isUpdateMode
@@ -177,10 +191,12 @@ const ShopRegister = () => {
         >
           {/* 🔹 Use Grid for larger screens */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
             {/* Shop Name */}
             <div>
-              <label htmlFor="shopName" className="block mb-1 font-medium text-slate-700">
+              <label
+                htmlFor="shopName"
+                className="block mb-1 font-medium text-slate-700"
+              >
                 Shop Name
               </label>
               <Input
@@ -196,7 +212,10 @@ const ShopRegister = () => {
 
             {/* Owner Name */}
             <div>
-              <label htmlFor="ownerName" className="block mb-1 font-medium text-slate-700">
+              <label
+                htmlFor="ownerName"
+                className="block mb-1 font-medium text-slate-700"
+              >
                 Owner Name
               </label>
               <Input
@@ -212,7 +231,10 @@ const ShopRegister = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block mb-1 font-medium text-slate-700">
+              <label
+                htmlFor="email"
+                className="block mb-1 font-medium text-slate-700"
+              >
                 Email Address
               </label>
               <Input
@@ -229,7 +251,10 @@ const ShopRegister = () => {
 
             {/* Phone */}
             <div>
-              <label htmlFor="phone" className="block mb-1 font-medium text-slate-700">
+              <label
+                htmlFor="phone"
+                className="block mb-1 font-medium text-slate-700"
+              >
                 Phone Number
               </label>
               <Input
@@ -246,7 +271,10 @@ const ShopRegister = () => {
 
             {/* Place */}
             <div>
-              <label htmlFor="place" className="block mb-1 font-medium text-slate-700">
+              <label
+                htmlFor="place"
+                className="block mb-1 font-medium text-slate-700"
+              >
                 Place / Area
               </label>
               <Input
@@ -256,6 +284,44 @@ const ShopRegister = () => {
                 value={formData.place}
                 onChange={handleChange}
                 placeholder="Enter your shop location (e.g: Kannur)"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Opening Time */}
+            <div>
+              <label
+                htmlFor="openingTime"
+                className="block mb-1 font-medium text-slate-700"
+              >
+                Opening Time
+              </label>
+              <Input
+                id="openingTime"
+                name="openingTime"
+                type="time"
+                value={formData?.openingTime}
+                onChange={handleChange}
+                required
+                className="w-full"
+              />
+            </div>
+
+            {/* Closing Time */}
+            <div>
+              <label
+                htmlFor="closingTime"
+                className="block mb-1 font-medium text-slate-700"
+              >
+                Closing Time
+              </label>
+              <Input
+                id="closingTime"
+                name="closingTime"
+                type="time"
+                value={formData?.closingTime}
+                onChange={handleChange}
                 required
                 className="w-full"
               />
@@ -278,18 +344,21 @@ const ShopRegister = () => {
                 ⚠️ Only add location when you are at your laundry shop.
               </p>
 
-              {formData?.location.lat && formData?.location.lng && (
+              {formData?.location?.lat && formData?.location.lng && (
                 <p className="text-sm text-gray-600 mt-2">
-                  📍 {formData.location.lat.toFixed(4)}, {formData.location.lng.toFixed(4)}
+                  📍 {formData?.location?.lat.toFixed(4)},{" "}
+                  {formData?.location?.lng.toFixed(4)}
                 </p>
               )}
             </div>
-
           </div>
 
           {/* Full width fields (Address & Services) */}
           <div>
-            <label htmlFor="address" className="block mb-1 font-medium text-slate-700">
+            <label
+              htmlFor="address"
+              className="block mb-1 font-medium text-slate-700"
+            >
               Shop Address
             </label>
             <Textarea
@@ -305,12 +374,15 @@ const ShopRegister = () => {
 
           <div>
             <label className="block mb-3 text-lg font-semibold text-gray-800">
-              Services Offered <span className="text-gray-500 text-sm">(with cost)</span>
+              Services Offered{" "}
+              <span className="text-gray-500 text-sm">(with cost)</span>
             </label>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {servicesOptions?.map((service) => {
-                const selectedService = formData?.services?.find((s) => s?.name === service);
+                const selectedService = formData?.services?.find(
+                  (s) => s?.name === service
+                );
 
                 return (
                   <div
@@ -326,7 +398,9 @@ const ShopRegister = () => {
                         onChange={handleCheckboxChange}
                         className="h-5 w-5 accent-indigo-600"
                       />
-                      <span className="text-gray-700 font-medium">{service}</span>
+                      <span className="text-gray-700 font-medium">
+                        {service}
+                      </span>
                     </label>
 
                     {/* Cost Input (if selected) */}
@@ -335,7 +409,9 @@ const ShopRegister = () => {
                         type="number"
                         min="0"
                         value={selectedService.cost}
-                        onChange={(e) => handleServiceCostChange(service, e.target.value)}
+                        onChange={(e) =>
+                          handleServiceCostChange(service, e.target.value)
+                        }
                         placeholder="₹ Cost"
                         className="w-28 px-3 cursor-pointer py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                         required
@@ -346,7 +422,6 @@ const ShopRegister = () => {
               })}
             </div>
           </div>
-
 
           {/* Submit */}
           <motion.div whileTap={{ scale: 0.97 }}>

@@ -1,22 +1,19 @@
+import { useState } from "react";
 import Footer from "@/components/user/Footer";
-import { laundryShopsData, serviceData } from "../../utils/Data"
+import { serviceData } from "../../utils/Data"
 import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/user/Navbar";
-import React, { useState } from "react";
-import LaundryShopCard from "@/components/user/LaundryShopCard";
 import LaundryShopsSection from "@/components/user/LaundryShopsSection";
 
 
 
 const Service = () => {
 
-
     const [showServices, setShowServices] = useState(true);
 
     const handleToggle = () => {
         setShowServices(!showServices);
     }
-
 
 
     return (

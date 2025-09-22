@@ -1,19 +1,27 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, data } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, CreditCard, Wallet2, ShoppingCart } from "lucide-react";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
     Popover,
     PopoverTrigger,
     PopoverContent,
 } from "@/components/ui/popover";
-import Footer from "@/components/user/Footer";
-import Navbar from "@/components/user/Navbar";
-import { CreditCard, Wallet2, ShoppingCart } from "lucide-react";
 import {
     Table,
     TableBody,
@@ -23,28 +31,21 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-const laundryShopsData = [
-    {
-        id: "1",
-        name: "Sparkle Wash & Fold",
-        image: "/images/laundry1.jpg",
-        address: "123 Clean Street, Kochi",
-        contact: "9876543210",
-        openingHours: "8:00 AM - 9:00 PM",
-        rating: 4.3,
-        services: [
-            { name: "Dry Cleaning", price: "100" },
-            { name: "Ironing", price: "40" },
-            { name: "Pickup & Delivery", price: "60" },
-        ],
-        location: "123 Clean Street, Kochi",
-        status: "close"
-    },
-];
+import Footer from "@/components/user/Footer";
+import Navbar from "@/components/user/Navbar";
+import { useFetchShopDataById } from "@/hooks/useFetchShopById";
+
 
 const LaundryDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+
+    // ✅ fetch shop data with React Query
+    const { data: shop, isLoading, isError } = useFetchShopDataById(id);
+
+    console.log(data)
+
+
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
@@ -54,9 +55,11 @@ const LaundryDetailsPage = () => {
         selectedServices: [{ service: "", quantity: 1 }],
     });
 
-    const shop = laundryShopsData.find((s) => s.id === id);
-    if (!shop)
-        return <div className="text-center p-10 text-gray-600">Laundry shop not found.</div>;
+    if (isLoading)
+        return <div className="text-center p-10 text-gray-600">Loading shop details...</div>;
+
+    if (isError || !shop)
+        return <div className="text-center p-10 text-red-600">Failed to load shop.</div>;
 
     const handleChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -80,7 +83,9 @@ const LaundryDetailsPage = () => {
 
     return (
         <>
+            {/* Navbar */}
             <Navbar />
+
             <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
                 <Button
                     onClick={() => navigate(-1)}
@@ -93,26 +98,24 @@ const LaundryDetailsPage = () => {
                     {/* Shop Details */}
                     <div className="md:w-1/2 space-y-4 px-1">
                         <img
-                            src={"/shop_img.jpg"}
-                            alt={shop?.name}
+                            src={shop?.image || "/shop_img.jpg"}
+                            alt={shop?.shopName}
                             className="w-full h-64 object-cover rounded-xl"
                         />
                         <div className="flex items-center justify-between">
-                            <h2 className="text-3xl font-bold text-slate-800">{shop?.name}</h2>
-                            <span className={`text-green-700 font-semibold text-md ${shop?.status == "close" ? "text-red-700 bg-red-50" : "text-green-600 bg-green-50"} shadow px-4 py-0.5 rounded-full`}>
-                                {shop?.status == "close" ? "close" : "open"}
+                            <h2 className="text-3xl font-bold text-slate-800">{shop?.shopName}</h2>
+                            <span
+                                className={`${shop?.isOpen ? "text-green-600 bg-green-50" : "text-red-600 bg-red-50"
+                                    } shadow px-4 py-0.5 rounded-full font-semibold`}
+                            >
+                                {shop?.isOpen ? "Open" : "Closed"}
                             </span>
                         </div>
                         <p className="text-sm text-slate-600">{shop?.address}</p>
-                        <p className="text-sm text-slate-500">📞 {shop?.contact}</p>
-                        <p className="text-sm text-slate-500">⏰ {shop?.openingHours}</p>
-
-                        <div className="flex gap-1 text-yellow-500 text-sm">
-                            {Array.from({ length: 5 }, (_, i) => (
-                                <span key={i}>{i < Math.round(shop?.rating) ? "★" : "☆"}</span>
-                            ))}
-                            <span className="ml-1 text-gray-500">({shop?.rating})</span>
-                        </div>
+                        <p className="text-sm text-slate-500">📞 {shop?.phone}</p>
+                        <p className="text-sm text-slate-500">
+                            ⏰ {shop?.openingTime} – {shop?.closingTime}
+                        </p>
 
                         <div className="pt-2">
                             <h4 className="font-medium text-slate-700 mb-1">Services:</h4>
@@ -244,7 +247,9 @@ const LaundryDetailsPage = () => {
                                     </PopoverTrigger>
 
                                     <PopoverContent className="w-72 p-4 rounded-xl shadow-lg border bg-white">
-                                        <h3 className="text-lg font-semibold text-slate-800 mb-3 text-center">Select Payment Method</h3>
+                                        <h3 className="text-lg font-semibold text-slate-800 mb-3 text-center">
+                                            Select Payment Method
+                                        </h3>
                                         <div className="flex flex-col gap-3">
                                             <Button
                                                 variant="outline"
@@ -275,7 +280,6 @@ const LaundryDetailsPage = () => {
                                         </div>
                                     </PopoverContent>
                                 </Popover>
-
                             </form>
                         </CardContent>
                     </Card>
@@ -294,7 +298,9 @@ const LaundryDetailsPage = () => {
                             {shop?.services.map((service, index) => (
                                 <TableRow key={index}>
                                     <TableCell className="font-medium text-blue-700">{service?.name}</TableCell>
-                                    <TableCell className="text-green-600 font-semibold">&#8377;{service?.price}</TableCell>
+                                    <TableCell className="text-green-600 font-semibold">
+                                        ₹{service?.cost}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -306,7 +312,7 @@ const LaundryDetailsPage = () => {
                     <div className="rounded-lg overflow-hidden border">
                         <iframe
                             title="Laundry Location"
-                            src="https://www.google.com/maps?q=11.866736, 75.371641&z=15&output=embed"
+                            src={`https://www.google.com/maps?q=${shop?.location?.lat},${shop?.location?.lng}&z=15&output=embed`}
                             width="100%"
                             height="400"
                             style={{ border: 0 }}

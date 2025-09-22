@@ -13,8 +13,7 @@ const LaundryShopsSection = () => {
 
     // ✅ Fetch shops using custom hook
     const { data: shops, isLoading, isError } = useFetchAllShop();
-
-    console.log(shops)
+    
 
     // ✅ Filter shops only after data is fetched
     const filteredShops = shops?.filter((shop) => {
@@ -54,7 +53,7 @@ const LaundryShopsSection = () => {
     return (
         <section className="min-w-[100vw] mx-auto px-4 py-10">
             {/* Search & Filter Controls */}
-            <div className="flex  flex-col md:flex-row justify-start gap-4 mb-6 w-full">
+            <div className="flex  flex-col md:flex-row justify-between gap-4 mb-6 w-full">
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 <CustomServiceFilter serviceFilter={serviceFilter} setServiceFilter={setServiceFilter} />
             </div>

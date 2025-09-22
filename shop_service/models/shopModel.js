@@ -41,6 +41,14 @@ const shopSchema = new mongoose.Schema(
       lat: { type: Number, default: null },
       lng: { type: Number, default: null },
     },
+    openingTime: {
+      type: String,
+      required: true,
+    },
+    closingTime: {
+      type: String,
+      required: true,
+    },
     services: [
       {
         name: {
