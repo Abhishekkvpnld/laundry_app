@@ -34,16 +34,19 @@ import {
 import Footer from "@/components/user/Footer";
 import Navbar from "@/components/user/Navbar";
 import { useFetchShopDataById } from "@/hooks/useFetchShopById";
+import { usePlaceOrder } from "@/hooks/usePlaceOrder";
+import { toast } from "sonner";
 
 
 const LaundryDetailsPage = () => {
+
+
     const { id } = useParams();
     const navigate = useNavigate();
 
     // ✅ fetch shop data with React Query
     const { data: shop, isLoading, isError } = useFetchShopDataById(id);
-
-    console.log(data)
+    const { mutate, data, isError: orderError, isPending } = usePlaceOrder()
 
 
     const [formData, setFormData] = useState({
@@ -64,13 +67,40 @@ const LaundryDetailsPage = () => {
     const handleChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value });
 
+
     const handleSubmit = (paymentType) => {
-        const details = formData.selectedServices
-            .map((s) => `${s.quantity} x ${s.service}`)
-            .join(", ");
+        if (!formData.selectedServices || formData.selectedServices.length === 0) {
+            alert("Please select at least one service");
+            return;
+        }
 
-        alert(`Booking Submitted!\nPayment: ${paymentType}\nServices: ${details}`);
+        // Calculate total amount
+        const totalAmount = formData.selectedServices.reduce((acc, s) => {
+            const serviceData = shop.services.find((srv) => srv.name === s.service);
+            return acc + (serviceData?.cost || 0) * s.quantity;
+        }, 0);
 
+        // Prepare order payload
+        const orderPayload = {
+            name: formData.name,
+            phone: formData.phone,
+            address: formData.address,
+            note: formData.note,
+            service_date: formData.pickupDate,
+            services: formData.selectedServices.map((s) => ({
+                service: s.service,
+                quantity: s.quantity,
+            })),
+            paymentMethod: paymentType === "Cash on Delivery" ? "cashOnDelivery" : "online",
+            totalAmount,
+            paymentStatus: "pending",
+            paymentId: null, // for online payment, you can fill after gateway
+        };
+
+        // Place order using React Query mutation
+        mutate(orderPayload);
+
+        // Reset form
         setFormData({
             name: "",
             phone: "",
@@ -79,7 +109,10 @@ const LaundryDetailsPage = () => {
             note: "",
             selectedServices: [{ service: "", quantity: 1 }],
         });
+
+        toast.success(`Booking Submitted!\nPayment: ${paymentType}\nTotal: ₹${totalAmount}`);
     };
+
 
     return (
         <>
@@ -141,7 +174,7 @@ const LaundryDetailsPage = () => {
                             <form className="space-y-4">
                                 <Input
                                     name="name"
-                                    value={formData.name}
+                                    value={formData?.name}
                                     onChange={handleChange}
                                     placeholder="Your Name"
                                     required
@@ -149,24 +182,24 @@ const LaundryDetailsPage = () => {
                                 <Input
                                     name="phone"
                                     type="tel"
-                                    value={formData.phone}
+                                    value={formData?.phone}
                                     onChange={handleChange}
                                     placeholder="Phone Number"
                                     required
                                 />
                                 <Textarea
                                     name="address"
-                                    value={formData.address}
+                                    value={formData?.address}
                                     onChange={handleChange}
                                     placeholder="Your Address"
                                     required
                                 />
 
-                                {formData.selectedServices.map((entry, index) => (
+                                {formData?.selectedServices?.map((entry, index) => (
                                     <div key={index} className="flex gap-4 items-center">
                                         <div className="flex-1">
                                             <Select
-                                                value={entry.service}
+                                                value={entry?.service}
                                                 onValueChange={(value) => {
                                                     const updated = [...formData.selectedServices];
                                                     updated[index].service = value;
@@ -275,7 +308,7 @@ const LaundryDetailsPage = () => {
                                                 onClick={() => alert("Redirecting to cart...")}
                                             >
                                                 <ShoppingCart className="w-4 h-4" />
-                                                View Cart
+                                                View Orders
                                             </Button>
                                         </div>
                                     </PopoverContent>
@@ -295,7 +328,7 @@ const LaundryDetailsPage = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {shop?.services.map((service, index) => (
+                            {shop?.services?.map((service, index) => (
                                 <TableRow key={index}>
                                     <TableCell className="font-medium text-blue-700">{service?.name}</TableCell>
                                     <TableCell className="text-green-600 font-semibold">

@@ -33,6 +33,7 @@ import { clearUser, setUser } from "./redux/authSlice";
 import ProtectedRoute from "@/helper/ProtectedRoute";
 import NotFound from "./helper/NotFound";
 import ShopOwnerProfile from "./pages/shop/ShopOwnerProfile";
+import Booking from "./pages/user/Booking";
 
 // 🌍 Backend URL
 const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
@@ -75,6 +76,7 @@ const App = () => {
         <Route path="/services" element={<ProtectedRoute><Service /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/details/:id" element={<ProtectedRoute><LaundryDetailsPage /></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
 
         {/* Shop Owner */}
         <Route path="/shop" element={<ProtectedRoute><ShopOwnerHome /></ProtectedRoute>} />

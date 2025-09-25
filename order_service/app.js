@@ -3,7 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
-import dbConnection from "./utils/dbConnection";
+import dbConnection from "./utils/dbConnection.js";
+import orderRoute from "./routes/orderRoute.js";
 
 dotenv.config();
 
@@ -17,6 +18,9 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("Server running....");
 });
+
+//Order Route
+app.use("/order", orderRoute);
 
 const PORT = process.env.PORT || 4004;
 dbConnection().then(() => {
