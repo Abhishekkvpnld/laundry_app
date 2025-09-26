@@ -34,6 +34,8 @@ import ProtectedRoute from "@/helper/ProtectedRoute";
 import NotFound from "./helper/NotFound";
 import ShopOwnerProfile from "./pages/shop/ShopOwnerProfile";
 import Booking from "./pages/user/Booking";
+import PaymentSuccess from "./pages/user/PaymentSuccess";
+import PaymentError from "./pages/user/PaymentError";
 
 // 🌍 Backend URL
 const AUTH_BACKEND_URL = import.meta.env.VITE_AUTH_SERVICE_URL;
@@ -72,26 +74,29 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
 
         {/* User */}
-        <Route path="/" element={<ProtectedRoute><UserHome /></ProtectedRoute>} />
-        <Route path="/services" element={<ProtectedRoute><Service /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/details/:id" element={<ProtectedRoute><LaundryDetailsPage /></ProtectedRoute>} />
-        <Route path="/bookings" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute role={"user"}><UserHome /></ProtectedRoute>} />
+        <Route path="/services" element={<ProtectedRoute role={"user"}><Service /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute role={"user"}><Profile /></ProtectedRoute>} />
+        <Route path="/details/:id" element={<ProtectedRoute role={"user"}><LaundryDetailsPage /></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute role={"user"}><Booking /></ProtectedRoute>} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentError />} />
+
 
         {/* Shop Owner */}
-        <Route path="/shop" element={<ProtectedRoute><ShopOwnerHome /></ProtectedRoute>} />
-        <Route path="/shop/register" element={<ProtectedRoute><ShopRegister /></ProtectedRoute>} />
-        <Route path="/shop/orders" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
-        <Route path="/shop/profile" element={<ProtectedRoute><ShopOwnerProfile /></ProtectedRoute>} />
+        <Route path="/shop" element={<ProtectedRoute role={'shop'}><ShopOwnerHome /></ProtectedRoute>} />
+        <Route path="/shop/register" element={<ProtectedRoute role={'shop'}><ShopRegister /></ProtectedRoute>} />
+        <Route path="/shop/orders" element={<ProtectedRoute role={'shop'}><OrderHistory /></ProtectedRoute>} />
+        <Route path="/shop/profile" element={<ProtectedRoute role={'shop'}><ShopOwnerProfile /></ProtectedRoute>} />
 
         {/* Admin Panel */}
-        <Route path="/admin" element={<ProtectedRoute><AdminLayout><AdminHome /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/orders" element={<ProtectedRoute><AdminLayout><AdminOrder /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/customers" element={<ProtectedRoute><AdminLayout><AdminOrder /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/services" element={<ProtectedRoute><AdminLayout><AdminServices /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/shops" element={<ProtectedRoute><AdminLayout><AdminShop /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/settings" element={<ProtectedRoute><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/reports" element={<ProtectedRoute><AdminLayout><AdminReports /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminHome /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/orders" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminOrder /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/customers" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminOrder /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/services" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminServices /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/shops" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminShop /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/settings" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/reports" element={<ProtectedRoute role={"admin"}><AdminLayout><AdminReports /></AdminLayout></ProtectedRoute>} />
 
 
         {/* Not Found */}

@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
+import dbConnection from "./utils/dbConnection.js";
+import paymentRoute from "./routes/paymentRoute.js";
 
 dotenv.config();
 
@@ -16,6 +18,8 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("Server running....");
 });
+
+app.use("/payment", paymentRoute);
 
 const PORT = process.env.PORT || 4005;
 dbConnection().then(() => {

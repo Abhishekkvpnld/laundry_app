@@ -4,6 +4,8 @@ export const jwtAuth = (req, res, next) => {
   try {
     // Retrieve token from cookies
     const token = req.cookies?.token || req.headers?.cookie;
+
+
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -13,7 +15,7 @@ export const jwtAuth = (req, res, next) => {
     }
 
     // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decoded) => {
       if (error) {
         return res.status(401).json({
           success: false,
