@@ -28,10 +28,10 @@ const orderSchema = new mongoose.Schema(
       {
         service: { type: String, required: true },
         quantity: { type: Number, required: true, min: 1 },
+        unit_amount: { type: Number, required: true },
       },
     ],
 
-    // 💰 Payment Fields
     paymentMethod: {
       type: String,
       enum: ["cashOnDelivery", "online"],
@@ -61,4 +61,3 @@ const orderSchema = new mongoose.Schema(
 
 const orderModel = mongoose.model("Order", orderSchema);
 export default orderModel;
-

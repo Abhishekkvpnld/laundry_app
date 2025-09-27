@@ -79,8 +79,8 @@ const App = () => {
         <Route path="/profile" element={<ProtectedRoute role={"user"}><Profile /></ProtectedRoute>} />
         <Route path="/details/:id" element={<ProtectedRoute role={"user"}><LaundryDetailsPage /></ProtectedRoute>} />
         <Route path="/bookings" element={<ProtectedRoute role={"user"}><Booking /></ProtectedRoute>} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
-        <Route path="/payment-cancel" element={<PaymentError />} />
+        <Route path="/payment-success/:id" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel/:id" element={<PaymentError />} />
 
 
         {/* Shop Owner */}

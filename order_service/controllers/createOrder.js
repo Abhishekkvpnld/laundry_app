@@ -30,7 +30,7 @@ export const placeOrder = async (req, res) => {
     // set payment status based on method
     let paymentStatus = "pending";
     if (paymentMethod === "online" && paymentId) {
-      paymentStatus = "paid"; // later you should confirm via gateway webhook
+      paymentStatus = "paid";
     }
 
     // create new order

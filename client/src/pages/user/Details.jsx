@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, data } from "react-router-dom";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { ArrowLeft, CreditCard, Wallet2 } from "lucide-react";
@@ -38,6 +38,9 @@ import { useFetchShopDataById } from "@/hooks/useFetchShopById";
 import { usePlaceOrder } from "@/hooks/usePlaceOrder";
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "sonner";
+import axios from "axios";
+import { PAYMENT_API_END_POINT } from "@/utils/constants";
+
 
 
 
@@ -48,8 +51,8 @@ const LaundryDetailsPage = () => {
   // Fetch shop data
   const { data: shop, isLoading, isError } = useFetchShopDataById(id);
 
-  // Place order mutation
-  const { mutate, isLoading: orderLoading } = usePlaceOrder();
+  //Place order
+  const { isLoading: orderLoading, mutate } = usePlaceOrder()
 
   const [formData, setFormData] = useState({
     name: "sdadad",
@@ -57,11 +60,13 @@ const LaundryDetailsPage = () => {
     address: "dsadasda",
     pickupDate: "",
     note: "vvssss",
-    selectedServices: [{ service: "", quantity: 1 }],
+    selectedServices: [{ service: "", quantity: 1, unit_amount: null }],
   });
 
 
+  console.log(formData)
 
+  //Loading
   if (isLoading)
     return (
       <div className="flex flex-col items-center justify-center p-10 text-gray-600 animate-pulse">
@@ -92,7 +97,10 @@ const LaundryDetailsPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
 
+
+  //Submit Handler
   const handleSubmit = async (paymentType) => {
+
     if (!formData?.selectedServices || formData?.selectedServices.length === 0) {
       toast.error("Please select at least one service");
       return;
@@ -100,6 +108,8 @@ const LaundryDetailsPage = () => {
 
     const stripe = await loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
 
+
+    //Find Total Amount
     const totalAmount = formData.selectedServices.reduce((acc, s) => {
       const serviceData = shop.services.find((srv) => srv.name === s.service);
       return acc + (serviceData?.cost || 0) * s.quantity;
@@ -108,7 +118,6 @@ const LaundryDetailsPage = () => {
     const confirmOrder = window.confirm(
       `Please confirm your booking:\n\nPayment: ${paymentType}\nTotal Amount: ₹${totalAmount}\n\nDo you want to proceed?`
     );
-
     if (!confirmOrder) return;
 
     const orderPayload = {
@@ -120,51 +129,63 @@ const LaundryDetailsPage = () => {
       services: formData.selectedServices.map((s) => ({
         service: s.service,
         quantity: s.quantity,
+        unit_amount:s.unit_amount
       })),
       paymentMethod: paymentType === "Cash on Delivery" ? "cashOnDelivery" : "online",
       totalAmount,
-      paymentStatus: paymentType === "Cash on Delivery" ? "pending" : "paid",
+      paymentStatus: paymentType === "Cash on Delivery" ? "pending" : "initiated",
       paymentId: null,
     };
 
-    if (paymentType === "Online Payment") {
-      // try {
-      //   // 🔥 Send order to your payment service
-      //   const res = await fetch(`${import.meta.env.VITE_API_URL}/payment/create-checkout-session`, {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify(orderPayload),
-      //   });
 
-      //   const { sessionId } = await res.json();
-
-      //   // Redirect to Stripe Checkout
-      //   const result = await stripe.redirectToCheckout({ sessionId });
-
-      //   if (result.error) {
-      //     toast.error(result.error.message);
-      //   }
-      // } catch (err) {
-      //   toast.error("Payment initialization failed");
-      // }
-      console.log("online")
-    } else {
-      // COD flow -> save order normally
+    try {
       mutate(orderPayload, {
-        onSuccess: () => {
-          setFormData({
-            name: "",
-            phone: "",
-            address: "",
-            pickupDate: "",
-            note: "",
-            selectedServices: [{ service: "", quantity: 1 }],
-          });
-          navigate("/services");
+        onSuccess: async (createdOrder) => {
+          if (paymentType === "Online Payment") {
+
+            try {
+              const payRes = await axios.post(
+                `${PAYMENT_API_END_POINT}/create-checkout-session`,
+                { orderId: createdOrder._id, orderData: orderPayload },
+                { withCredentials: true }
+              );
+
+              const { sessionId } = payRes.data;
+              const result = await stripe.redirectToCheckout({ sessionId });
+
+              if (result?.error) {
+                toast.error(result.error.message);
+                return;
+              }
+            } catch (err) {
+              console.error(err);
+              toast.error("Payment initialization failed");
+            }
+          } else {
+            // COD → reset form + redirect
+            setFormData({
+              name: "",
+              phone: "",
+              address: "",
+              pickupDate: "",
+              note: "",
+              selectedServices: [{ service: "", quantity: 1, unit_amount: 0 }],
+            });
+            navigate("/services");
+          }
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message || "Order creation failed");
         },
       });
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong");
     }
   };
+
+
+
 
   return (
     <>
@@ -200,7 +221,7 @@ const LaundryDetailsPage = () => {
             <div className="pt-2">
               <h4 className="font-medium text-slate-700 mb-1">Services:</h4>
               <div className="flex flex-wrap gap-2">
-                {shop?.services.map((service, index) => (
+                {shop?.services?.map((service, index) => (
                   <span
                     key={index}
                     className="bg-muted text-slate-600 text-xs px-3 py-1 rounded-full border"
@@ -223,20 +244,26 @@ const LaundryDetailsPage = () => {
                 <Input name="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder="Phone Number" required />
                 <Textarea name="address" value={formData.address} onChange={handleChange} placeholder="Your Address" required />
 
-                {formData.selectedServices.map((entry, index) => (
+                {formData?.selectedServices?.map((entry, index) => (
                   <div key={index} className="flex gap-4 items-center">
                     <div className="flex-1">
                       <Select value={entry.service} onValueChange={(value) => {
                         const updated = [...formData.selectedServices];
                         updated[index].service = value;
+                        const selectedService = shop?.services?.find(
+                          (item) => item?.name === formData?.selectedServices[index].service
+                        );
+
+                        updated[index].unit_amount = selectedService?.cost
+
                         setFormData({ ...formData, selectedServices: updated });
                       }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a Service" />
                         </SelectTrigger>
                         <SelectContent>
-                          {shop.services.map((service, i) => (
-                            <SelectItem key={i} value={service.name}>{service.name}</SelectItem>
+                          {shop?.services?.map((service, i) => (
+                            <SelectItem key={i} value={service?.name}>{service?.name}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -248,11 +275,13 @@ const LaundryDetailsPage = () => {
                       value={entry.quantity}
                       onChange={(e) => {
                         const updated = [...formData.selectedServices];
-                        updated[index].quantity = e.target.value;
+                        updated[index].quantity = Number(e.target.value);
+
                         setFormData({ ...formData, selectedServices: updated });
                       }}
                       className="w-[100px]"
                     />
+
                     <Button variant="destructive" onClick={() => {
                       const updated = formData.selectedServices.filter((_, i) => i !== index);
                       setFormData({ ...formData, selectedServices: updated });
@@ -270,7 +299,7 @@ const LaundryDetailsPage = () => {
                 </Button>
 
                 <Textarea name="note" value={formData.note} onChange={handleChange} placeholder="Additional Notes (Optional)" />
-                <Input name="pickupDate" type="date" value={formData.pickupDate} onChange={handleChange} required />
+                <Input name="pickupDate" type="date"  min={new Date().toISOString().split("T")[0]} value={formData.pickupDate} onChange={handleChange} required />
 
                 <Popover>
                   <PopoverTrigger asChild>
@@ -293,21 +322,21 @@ const LaundryDetailsPage = () => {
           </Card>
         </div>
 
-        {/* Service Pricing Table */}
-        <div className="mt-12 space-y-4">
-          <h3 className="text-xl font-semibold text-slate-800">Service Pricing</h3>
+        {/* Pricing Table */}
+        <div>
+          <h3 className="text-xl font-semibold">Service Pricing</h3>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[200px] text-slate-700">Service</TableHead>
-                <TableHead className="text-slate-700">Price</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead>Price</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {shop?.services?.map((service, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium text-blue-700">{service?.name}</TableCell>
-                  <TableCell className="text-green-600 font-semibold">₹{service?.cost}</TableCell>
+                  <TableCell>{service?.name}</TableCell>
+                  <TableCell>₹{service?.cost}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

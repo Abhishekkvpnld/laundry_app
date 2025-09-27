@@ -25,7 +25,7 @@ const PaymentError = () => {
         </p>
 
         <Link
-          to="/checkout"
+          to="/services"
           className="mt-6 inline-block bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl shadow-md transition-all"
         >
           Try Again

@@ -13,7 +13,7 @@ const createOrder = async (orderData) => {
             { withCredentials: true }
         );
 
-        // return response.data;
+        return response?.data?.order;
     } catch (error) {
         console.error("Error placing order:", error);
         throw error.response?.data?.message || error.message || "Order failed";
