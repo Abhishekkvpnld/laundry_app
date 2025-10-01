@@ -11,7 +11,14 @@ dotenv.config();
 const app = express();
 
 
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === "/webhook") {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
+
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL, "http://localhost:5173"],
@@ -21,11 +28,11 @@ app.use(
 app.use(morgan("dev"));
 app.use(cookieParser());
 
+app.use("/", paymentRoute);
+
 app.get("/", (req, res) => {
   res.send("Server running....");
 });
-
-app.use("/payment", paymentRoute);
 
 const PORT = process.env.PORT || 4005;
 dbConnection().then(() => {
