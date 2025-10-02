@@ -1,5 +1,6 @@
 import env from "dotenv";
 import Stripe from "stripe";
+import axios from "axios";
 
 env.config();
 
@@ -22,10 +23,7 @@ export const webhook = async (request, response) => {
   switch (event.type) {
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object;
-      console.log(
-        "💰 PaymentIntent was successful!",
-        paymentIntent.id
-      );
+      console.log("💰 PaymentIntent was successful!", paymentIntent.id);
 
       // Call your DB update function or send email
       break;
@@ -41,7 +39,19 @@ export const webhook = async (request, response) => {
       );
       console.log("📦 Line items:", lineItems);
 
-      // Update DB, fulfill order, etc.
+      // Update Order Service with payment details
+      try {
+        await axios.patch(
+          `${process.env.ORDER_SERVICE_URL}/update-order/${session.metadata.orderId}`,
+          {
+            paymentId: session.payment_intent,
+            paymentStatus: "paid",
+          }
+        );
+        console.log("📝 Order updated successfully!");
+      } catch (err) {
+        console.error("❌ Failed to update order service:", err.message);
+      }
       break;
     }
 
